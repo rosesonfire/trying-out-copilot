@@ -1,0 +1,24 @@
+#!/bin/sh
+set -eu
+
+project_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+cd "$project_dir"
+
+if [ "$#" -gt 1 ] || { [ "$#" -eq 1 ] && [ "$1" != "--build" ]; }; then
+  echo "Usage: $0 [--build]" >&2
+  exit 2
+fi
+
+if [ "$#" -eq 1 ]; then
+  image_name=$(docker compose --env-file env.dev config --images dev)
+  docker compose --env-file env.dev rm --stop --force dev
+
+  image_ids=$(docker image ls --quiet --filter "reference=$image_name")
+  for image_id in $image_ids; do
+    docker image rm "$image_id"
+  done
+
+  docker compose --env-file env.dev build --no-cache dev
+fi
+
+exec docker compose --env-file env.dev up dev

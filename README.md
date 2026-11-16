@@ -28,10 +28,12 @@ poetry run pytest
 
 The development server uses its Dockerfile defaults, runs on Uvicorn with
 reload enabled, and restarts when Python files in `src/` change. Load `env.dev`
-for Compose port mapping:
+for Compose port mapping. The existing image is used by default; pass `--build`
+to remove the dev container and image, then rebuild without cached layers:
 
 ```sh
-docker compose --env-file env.dev up --build dev
+./scripts/run-dev
+./scripts/run-dev --build
 ```
 
 Run the test watcher in its dedicated container. It runs pytest immediately,
@@ -54,7 +56,7 @@ The dev service listens on container port `8080`. Set `PORT` in `env.dev` to
 choose the published host port; shell values override it:
 
 ```sh
-PORT=9000 docker compose --env-file env.dev up --build dev
+PORT=9000 ./scripts/run-dev
 ```
 
 ### Environment variables

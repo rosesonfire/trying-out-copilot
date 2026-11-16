@@ -34,12 +34,15 @@ for Compose port mapping:
 docker compose --env-file env.dev up --build dev
 ```
 
-Run the test suite in its dedicated container. `pytest-watcher` runs pytest
-immediately, watches Python files under `src/` and `tests/`, and reruns tests
-when they change:
+Run the test watcher in its dedicated container. It runs pytest immediately,
+watches Python files under `src/` and `tests/`, and reruns tests when they
+change. Compose reuses the service container between runs. By default, the
+existing image is used; pass `--build` to remove the test container and image,
+then rebuild without using cached build layers:
 
 ```sh
-docker compose run --build --rm test
+./scripts/run-tests
+./scripts/run-tests --build
 ```
 
 The dev, test, and production containers run as the unprivileged `app` user.

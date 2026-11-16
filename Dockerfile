@@ -122,7 +122,6 @@ ARG WORKING_DIR
 ARG VENV_PATH
 ARG POETRY_VERSION
 
-# Source is copied into /app/src; Python must search there to find main.py.
 ENV VIRTUAL_ENV=${VENV_PATH} \
     PATH="${VENV_PATH}/bin:${PATH}" \
     POETRY_VIRTUALENVS_CREATE=false

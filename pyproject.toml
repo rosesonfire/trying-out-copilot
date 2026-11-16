@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "simple-http-server"
+version = "0.1.0"
+description = "A small JSON HTTP server"
+authors = []
+packages = [{ include = "main.py", from = "src" }]
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+httpx = "^0.28"
+pytest = "^8.3"
+pytest-watcher = "^0.6"
+
+[tool.poetry.dependencies]
+fastapi = "^0.115"
+python = ">=3.10,<4.0"
+uvicorn = { version = "^0.34", extras = ["standard"] }
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

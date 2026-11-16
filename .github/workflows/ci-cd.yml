@@ -1,0 +1,26 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main, master]
+    tags: ["v*"]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-build-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Run tests
+        run: docker compose run --build --rm test poetry run pytest -q
+
+      # Confirms the production image builds; this step does not publish it.
+      - name: Build production image
+        run: docker build --target production --tag simple-http-server:${GITHUB_SHA} .

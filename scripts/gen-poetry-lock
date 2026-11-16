@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+
+project_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+cd "$project_dir"
+
+LOCAL_UID="$(id -u)" LOCAL_GID="$(id -g)" \
+  docker compose run --build --rm poetry-lock

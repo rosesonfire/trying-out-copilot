@@ -1,0 +1,47 @@
+services:
+  poetry-lock:
+    build:
+      context: .
+      target: poetry-lock
+    # Prevent the generated lockfile from becoming root-owned on the host.
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+    # Write poetry.lock back to the host instead of losing it with
+    # the container.
+    volumes:
+      - .:/app
+
+  dev:
+    build:
+      context: .
+      target: dev
+    # Route host PORT to Uvicorn's fixed container port so host traffic reaches
+    # the server.
+    ports:
+      - "${PORT:-8080}:8080"
+    volumes:
+      # Mount src here for live code without hiding the Poetry metadata needed
+      # by poetry run.
+      - ./src:/app/src
+      # Persist bytecode in Docker-managed storage instead of the source tree.
+      - pycache-dev:/tmp/pycache
+
+  test:
+    build:
+      context: .
+      target: test
+    volumes:
+      # Mount src here for live code without hiding the Poetry metadata needed
+      # by poetry run.
+      - ./src:/app/src
+      # Let the test watcher see host test edits without rebuilding the image.
+      - ./tests:/app/tests
+      # Persist bytecode in Docker-managed storage instead of the project tree.
+      - pycache-test:/tmp/pycache
+      # Persist pytest cache in Docker-managed storage instead of
+      # the project tree.
+      - pytest-cache:/tmp/pytest-cache
+
+volumes:
+  pycache-dev:
+  pycache-test:
+  pytest-cache:
